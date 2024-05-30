@@ -43,7 +43,6 @@ SwiftShip (Login checkout) <br>
 
 ## Development
 
-- Working on deployment to AWS
 - Update the search functionality
 - Refactoring the code and update any logic issue
 
