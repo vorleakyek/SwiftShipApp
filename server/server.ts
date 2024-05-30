@@ -4,11 +4,7 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import pg from 'pg';
-import {
-  ClientError,
-  defaultMiddleware,
-  errorMiddleware,
-} from './lib/index.js';
+import { ClientError, errorMiddleware } from './lib/index.js';
 
 type OrderSummary = {
   totalItems: number;
@@ -34,11 +30,20 @@ type Shipping = {
   orderSummary: OrderSummary;
 };
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  `postgresql://${process.env.RDS_USERNAME}:${process.env.RDS_PASSWORD}@${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}/${process.env.RDS_DB_NAME}`;
+type Item = {
+  itemID: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  originalPrice: number;
+  status: string;
+  salePrice: number;
+  percentOff: number;
+  currentlyOnSale: boolean;
+};
+
 const db = new pg.Pool({
-  connectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -57,18 +62,6 @@ app.use(express.static(reactStaticDir));
 // Static directory for file uploads server/public/
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
-
-type Item = {
-  itemID: number;
-  name: string;
-  description: string;
-  imageUrl: string;
-  originalPrice: number;
-  status: string;
-  salePrice: number;
-  percentOff: number;
-  currentlyOnSale: boolean;
-};
 
 app.post('/api/auth/registration', async (req, res, next) => {
   try {
@@ -583,16 +576,16 @@ app.delete('/api/guest-checkout/:orderID', async (req, res, next) => {
     next(err);
   }
 });
+
 /*
- * Middleware that handles paths that aren't handled by static middleware
- * or API route handlers.
- * This must be the _last_ non-error middleware installed, after all the
- * get/post/put/etc. route handlers and just before errorMiddleware.
+ * Handles paths that aren't handled by any other route handler.
+ * It responds with `index.html` to support page refreshes with React Router.
+ * This must be the _last_ route, just before errorMiddleware.
  */
-app.use(defaultMiddleware(reactStaticDir));
+app.get('*', (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
 
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
-  process.stdout.write(`\n\napp listening on port ${process.env.PORT}\n\n`);
+  console.log('Listening on port', process.env.PORT);
 });
