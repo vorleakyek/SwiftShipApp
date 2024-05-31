@@ -1,4 +1,4 @@
-# match-master
+# SwiftShip
 
 A full-stack e-commerce web application for online shopping.
 
@@ -83,5 +83,7 @@ SwiftShip (Login checkout) <br>
 5. Run this command to view the data on the database
 
    ```shell
-   pgweb --db matchMaster
+   pgweb --db swift-ship-app
    ```
+### React chatbot kit documentation  
+https://fredrikoseberg.github.io/react-chatbot-kit-docs/docs/getting-started/
