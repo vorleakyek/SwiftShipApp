@@ -54,6 +54,10 @@ SwiftShip (Login checkout) <br>
 - NPM 8 or higher
 - PostgreSQL
 
+### Deployment 
+
+- This project was deployed using AWS Elastic Compute Cloud (EC2) for hosting
+
 ### Getting Started
 
 1. Clone the repository
